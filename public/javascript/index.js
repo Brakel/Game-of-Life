@@ -120,7 +120,7 @@ Board.prototype.draw = function () {
     for (let row = 0; row < this.columnLength; row++) {
         for (let col = 0; col < this.rowLength; col++) {
             let cell = this.cells[row][col];
-            ctx.fillStyle = cell.alive ? `hsla(${cell.position[0] + cell.position[1] * 4}, 80%, 80%, 1)` : `hsla(240, 30%, 20%, 100%)`;
+            ctx.fillStyle = cell.alive ? `hsla(${cell.position[0] + cell.position[1] * 4}, 80%, 80%, 1)` : `hsla(240, 30%, 20%, 80%)`;
             ctx.fillRect(cell.position[1] * cell.size, cell.position[0] * cell.size, cell.size, cell.size);
         }
     }

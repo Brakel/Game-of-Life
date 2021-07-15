@@ -1,0 +1,22 @@
+h1 {
+    color: #f8f9fa;
+    margin-bottom: 20px;
+}
+
+body {
+    background-color: hsl(240, 30%, 20%);
+}
+
+#canvas {
+    outline: solid #f8f9fa;
+    border-radius: 5px;
+}
+
+.btn {
+    margin-top: 20px;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
