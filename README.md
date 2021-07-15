@@ -1,0 +1,1 @@
+A colourful game of life implementation.
