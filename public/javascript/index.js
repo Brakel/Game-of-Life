@@ -75,18 +75,6 @@ class Board {
         this.cells = [];
         /** @type {number} Size of an individual cell in pixels */
         this.cellSize = canvas.width / cellsPerRow;
-        /** @type {object.<string, Array.<number>>} Row/column indices to apply 
-         * to move from a cell in a particular direction */
-        this.directions = {
-            "UP": [-1, 0],
-            "UP_RIGHT": [-1, 1],
-            "RIGHT": [0, 1],
-            "DOWN_RIGHT": [1, 1],
-            "DOWN": [1, 0],
-            "DOWN_LEFT": [1, -1],
-            "LEFT": [0, -1],
-            "UP_LEFT": [-1, -1],
-        }
     }
 
     /**
@@ -97,6 +85,19 @@ class Board {
         return this.rowLength * this.columnLength;
     }
 }
+
+/** @type {object.<string, Array.<number>>} Row/column indices to apply 
+ * to move from a cell in a particular direction */
+Board.directions = [
+    [-1, 0],
+    [-1, 1],
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [0, -1],
+    [-1, -1],
+];
 
 /**
  * Initialises the cells array with Cells
@@ -116,12 +117,13 @@ Board.prototype.init = function () {
  * Draws each cell to the canvas
  */
 Board.prototype.draw = function () {
-    this.cells.forEach(row => {
-        row.forEach(cell => {
+    for (let row = 0; row < this.columnLength; row++) {
+        for (let col = 0; col < this.rowLength; col++) {
+            let cell = this.cells[row][col];
             ctx.fillStyle = cell.alive ? `hsla(${cell.position[0] + cell.position[1] * 4}, 80%, 80%, 1)` : `hsla(240, 30%, 20%, 100%)`;
             ctx.fillRect(cell.position[1] * cell.size, cell.position[0] * cell.size, cell.size, cell.size);
-        });
-    });
+        }
+    }
 }
 
 /**
@@ -142,9 +144,9 @@ Board.prototype.isInBounds = function (row, col) {
  */
 Board.prototype.getNeighbours = function (row, col) {
     let neighboursArr = [];
-    for (let [x, y] of Object.values(this.directions)) {
-        if (this.isInBounds(row + x, col + y)) {
-            neighboursArr.push([row + x, col + y]);
+    for (let i = 0; i < Board.directions.length; i++) {
+        if (this.isInBounds(row + Board.directions[i][0], col + Board.directions[i][1])) {
+            neighboursArr.push([row + Board.directions[i][0], col + Board.directions[i][1]]);
         }
     }
     return neighboursArr;
@@ -154,32 +156,34 @@ Board.prototype.getNeighbours = function (row, col) {
  * Loops through the cells array and updates livingNeighbours
  */
 Board.prototype.updateLivingNeighbours = function () {
-    this.cells.forEach(row => {
-        row.forEach(cell => {
+    for (let row = 0; row < this.columnLength; row++) {
+        for (let col = 0; col < this.rowLength; col++) {
+            let cell = this.cells[row][col];
             cell.livingNeighbous = 0;
-            cell.neighbours.forEach(pos => {
-                if (this.cells[pos[0]][pos[1]].alive === true) {
+            for (let i = 0; i < cell.neighbours.length; i++) {
+                let n = cell.neighbours[i];
+                if (this.cells[n[0]][n[1]].alive)
                     cell.livingNeighbous++;
-                }
-            });
-        });
-    });
+            }
+        }
+    }
 }
 
 /**
  * Loops through the cells array and updates the alive boolean
  */
 Board.prototype.updateAliveStatus = function () {
-    this.cells.forEach(row => {
-        row.forEach(cell => {
+    for (let row = 0; row < this.columnLength; row++) {
+        for (let col = 0; col < this.rowLength; col++) {
+            let cell = this.cells[row][col];
             if (cell.alive) {
                 if (cell.livingNeighbous < 2 || cell.livingNeighbous > 3) cell.alive = false;
             }
             if (!cell.alive) {
                 if (cell.livingNeighbous === 3) cell.alive = true;
             }
-        });
-    });
+        }
+    }
 }
 
 let lastTime;
